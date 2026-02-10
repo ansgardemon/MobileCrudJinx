@@ -1,0 +1,32 @@
+﻿@inject NavigationManager Nav
+
+<div class="app-shell">
+    <header class="app-header">
+        🐈‍⬛ Jinx CRUD
+    </header>
+
+    <main class="app-body @(EhHome ? "no-scroll" : "")">
+        @ChildContent
+    </main>
+
+    <nav class="app-nav">
+        <NavLink href="/" Match="NavLinkMatch.All" class="nav-item">
+            🏠
+            <span>Home</span>
+        </NavLink>
+
+        <NavLink href="produtos" class="nav-item">
+            📦
+            <span>Produtos</span>
+        </NavLink>
+    </nav>
+</div>
+
+@code {
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+
+    bool EhHome =>
+        Nav.Uri.TrimEnd('/')
+        == Nav.BaseUri.TrimEnd('/');
+}

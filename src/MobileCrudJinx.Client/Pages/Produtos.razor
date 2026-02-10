@@ -1,0 +1,41 @@
+﻿@page "/produtos"
+@using MobileCrudJinx.Client.DTOs
+@using MobileCrudJinx.Client.Components
+
+
+<h3>Produtos</h3>
+
+@if (editando)
+{
+    <ProdutoForm produto="produtoAtual"
+                 OnSaved="Voltar"
+                 OnCancel="Voltar" />
+}
+else
+{
+    <button @onclick="Novo">Novo Produto</button>
+    <ProdutoLista OnEditar="Editar" />
+}
+
+@code {
+    bool editando = false;
+    ProdutoDto produtoAtual = new();
+
+    void Novo()
+    {
+        produtoAtual = new ProdutoDto();
+        editando = true;
+    }
+
+    void Editar(ProdutoDto p)
+    {
+        produtoAtual = p;
+        editando = true;
+    }
+
+    void Voltar()
+    {
+        editando = false;
+        StateHasChanged();
+    }
+}

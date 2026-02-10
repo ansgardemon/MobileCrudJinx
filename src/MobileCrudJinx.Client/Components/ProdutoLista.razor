@@ -1,0 +1,86 @@
+﻿@using MobileCrudJinx.Client.DTOs
+@inject MobileCrudJinx.Client.Services.ProdutoService ProdutoService
+
+@if (produtos == null)
+{
+    <p>Carregando...</p>
+}
+else if (!produtos.Any())
+{
+    <p>Nenhum produto cadastrado.</p>
+}
+else
+{
+    <div class="produto-grid">
+        @foreach (var p in produtos)
+        {
+            <div class="produto-card">
+                
+                <div class="produto-info">
+                
+                <strong>@p.Nome</strong>
+                <span>Preço: R$ @p.Preco</span>
+                <span>Estoque: @p.Estoque</span>
+
+                </div>
+
+                <div class="produto-movimento">
+                    <button @onclick="() => AbrirMovimento(p)">📦</button>
+                </div>
+
+                <div class="produto-actions">
+                    <button @onclick="() => Editar(p)">✏️</button>
+                    <button class="btn-danger" @onclick="() => Excluir(p.Id)">🗑️</button>
+                </div>
+            </div>
+
+            @if (produtoMovimento == p)
+            {
+                <ProdutoMovimento Produto="p"
+                                  OnSalvar="SalvarMovimento" />
+            }
+        }
+    </div>
+}
+
+@code {
+    List<ProdutoDto>? produtos;
+
+    [Parameter]
+    public EventCallback<ProdutoDto> OnEditar { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        produtos = await ProdutoService.GetAll();
+    }
+
+    async Task Editar(ProdutoDto p)
+    {
+        await OnEditar.InvokeAsync(p);
+    }
+
+    async Task Excluir(int id)
+    {
+        await ProdutoService.Delete(id);
+        produtos = await ProdutoService.GetAll();
+    }
+
+    ProdutoDto? produtoMovimento;
+
+    void AbrirMovimento(ProdutoDto p)
+    {
+        produtoMovimento = p;
+    }
+
+    async Task SalvarMovimento(int quantidade)
+    {
+        if (produtoMovimento == null) return;
+
+        produtoMovimento.Estoque += quantidade;
+
+        // futuramente:
+        // await produtoService.MovimentarEstoque(produtoMovimento.Id, quantidade);
+
+        produtoMovimento = null;
+    }
+}

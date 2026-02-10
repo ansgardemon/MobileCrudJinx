@@ -1,0 +1,6 @@
+@MobileCrudJinx.Api_HostAddress = http://localhost:5098
+
+GET {{MobileCrudJinx.Api_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

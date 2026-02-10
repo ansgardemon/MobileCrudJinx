@@ -1,0 +1,40 @@
+﻿@using MobileCrudJinx.Client.DTOs
+<div class="movimento-form">
+    <div class="movimento-controles">
+
+        <div class="movimento-controles-menos">
+        <button @onclick="Diminuir">−</button>
+        </div>
+
+        <div class="movimento-controles-quantidade">
+        <span>@Quantidade</span>
+        </div>
+
+
+        <div class="movimento-controles-mais">
+        <button @onclick="Aumentar">+</button>
+        </div>
+    </div>
+
+    <div class="movimento-salvar">
+    <button class="btn" @onclick="Salvar">Salvar</button>
+    </div>
+</div>
+
+@code {
+    [Parameter] public ProdutoDto Produto { get; set; } = default!;
+    [Parameter] public EventCallback<int> OnSalvar { get; set; }
+
+    int Quantidade = 0;
+
+    void Aumentar() => Quantidade++;
+
+    void Diminuir() => Quantidade --;
+
+
+    async Task Salvar()
+    {
+        await OnSalvar.InvokeAsync(Quantidade);
+        Quantidade = 0;
+    }
+}

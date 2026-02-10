@@ -1,0 +1,16 @@
+﻿@page "/"
+
+<div class="HomeHeader">
+    <h2>🐈‍⬛ Jinx CRUD</h2>
+    <p>Bem-vindo ao Jinx.</p>
+</div>
+
+
+@code {
+    [Inject] NavigationManager Nav { get; set; } = default!;
+
+    void IrProdutos()
+    {
+        Nav.NavigateTo("/produtos");
+    }
+}

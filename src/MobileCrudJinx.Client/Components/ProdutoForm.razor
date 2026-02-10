@@ -1,0 +1,53 @@
+﻿@using MobileCrudJinx.Client.DTOs
+@inject MobileCrudJinx.Client.Services.ProdutoService ProdutoService
+
+<EditForm Model="produto" OnValidSubmit="Salvar">
+    <DataAnnotationsValidator />
+    <div class="form-container">
+    <div>
+        <label>Nome</label>
+        <InputText @bind-Value="produto.Nome" />
+    </div>
+
+    <div>
+        <label>Preço</label>
+        <InputNumber @bind-Value="produto.Preco" />
+    </div>
+
+    <div>
+        <label>Estoque</label>
+        <InputNumber @bind-Value="produto.Estoque" />
+    </div>
+    </div>
+
+    <div class="form-actions">
+    <button type="submit">Salvar</button>
+    <button type="button" @onclick="Cancelar">Cancelar</button>
+    </div>
+</EditForm>
+
+@code {
+    [Parameter]
+    public ProdutoDto produto { get; set; } = new();
+
+    [Parameter]
+    public EventCallback OnCancel { get; set; }
+
+    [Parameter]
+    public EventCallback OnSaved { get; set; }
+
+    async Task Salvar()
+    {
+        if (produto.Id == 0)
+            await ProdutoService.Create(produto);
+        else
+            await ProdutoService.Update(produto);
+
+        await OnSaved.InvokeAsync();
+    }
+
+    void Cancelar()
+    {
+        OnCancel.InvokeAsync();
+    }
+}

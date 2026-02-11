@@ -13,6 +13,7 @@ namespace MobileCrudJinx.Api.Data
         }
 
         public DbSet<Produto> Produtos  => Set<Produto>();
+        public DbSet<Movimento> Movimentos  => Set<Movimento>();
 
 
     }

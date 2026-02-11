@@ -48,6 +48,8 @@ else
 
     [Parameter]
     public EventCallback<ProdutoDto> OnEditar { get; set; }
+    [Parameter]
+    public EventCallback OnMovimentoSalvo { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
@@ -78,9 +80,12 @@ else
 
         produtoMovimento.Estoque += quantidade;
 
-        // futuramente:
-        // await produtoService.MovimentarEstoque(produtoMovimento.Id, quantidade);
-
         produtoMovimento = null;
+
+        // 🔄 Recarrega os produtos
+        produtos = await ProdutoService.GetAll();
+
+        // 🔔 Avisa a página
+        await OnMovimentoSalvo.InvokeAsync();
     }
 }

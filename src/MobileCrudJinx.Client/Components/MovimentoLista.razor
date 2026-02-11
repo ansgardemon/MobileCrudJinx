@@ -1,0 +1,51 @@
+﻿@using MobileCrudJinx.Client.DTOs
+@using MobileCrudJinx.Client.Services
+@inject MovimentoService MovimentoService
+@inject ProdutoService ProdutoService
+
+<h3>Movimentos</h3>
+
+@if (movimentos == null || produtos == null)
+{
+    <p>Carregando...</p>
+}
+else if (!movimentos.Any())
+{
+    <p>Nenhum movimento encontrado.</p>
+}
+else
+{
+    <div class="movimento-grid">
+        @foreach (var m in movimentos)
+        {
+            <div class="movimento-card">
+                <strong>@NomeProduto(m.ProdutoId)</strong>
+                <span>Quantidade: @m.QuantidadeMovimento</span>
+                <span>@m.Descricao</span>
+            </div>
+        }
+    </div>
+}
+
+@code {
+    private List<MovimentoDto>? movimentos;
+    private List<ProdutoDto>? produtos;
+
+    protected override async Task OnInitializedAsync()
+    {
+        produtos = await ProdutoService.GetAll();
+        movimentos = await MovimentoService.GetAll();
+    }
+
+    string NomeProduto(int produtoId)
+    {
+        return produtos?.FirstOrDefault(p => p.Id == produtoId)?.Nome ?? "Produto desconhecido";
+    }
+
+    public async Task Carregar()
+    {
+        produtos = await ProdutoService.GetAll();
+        movimentos = await MovimentoService.GetAll();
+        StateHasChanged();
+    }
+}

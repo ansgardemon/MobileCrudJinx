@@ -1,4 +1,6 @@
 ﻿@using MobileCrudJinx.Client.DTOs
+@using MobileCrudJinx.Client.Services
+@inject MovimentoService MovimentoService
 <div class="movimento-form">
     <div class="movimento-controles">
 
@@ -34,7 +36,21 @@
 
     async Task Salvar()
     {
-        await OnSalvar.InvokeAsync(Quantidade);
+        // REGRA: zero não cria movimento
+        if (Quantidade == 0)
+            return;
+
+        var dto = new MovimentoCreateDTO
+        {
+            ProdutoId = Produto.Id,
+            QuantidadeMovimento = Quantidade,
+            Descricao = Quantidade > 0 ? "Entrada" : "Saída"
+        };
+
+        await MovimentoService.Create(dto);
+
         Quantidade = 0;
+
+        await OnSalvar.InvokeAsync();
     }
 }

@@ -5,6 +5,8 @@
 
 <h3>Produtos</h3>
 
+
+<div class="ProdutosLista">
 @if (editando)
 {
     <ProdutoForm produto="produtoAtual"
@@ -14,12 +16,28 @@
 else
 {
     <button @onclick="Novo">Novo Produto</button>
-    <ProdutoLista OnEditar="Editar" />
+    <ProdutoLista OnEditar="Editar"
+        OnMovimentoSalvo="RecarregarMovimentos"/>
 }
+
+</div>
+
+<div class="Movimentos">
+    <MovimentoLista @ref="movimentoLista" />
+</div>
 
 @code {
     bool editando = false;
     ProdutoDto produtoAtual = new();
+    MovimentoLista? movimentoLista;
+
+    async Task RecarregarMovimentos()
+{
+    if (movimentoLista != null)
+        await movimentoLista.Carregar();
+}
+
+
 
     void Novo()
     {
